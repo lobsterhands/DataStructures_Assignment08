@@ -1,0 +1,10 @@
+a8a: Assign08TestAuto.o DPQueue.o
+	g++ Assign08TestAuto.o DPQueue.o -o a8a
+DPQueue.o: DPQueue.cpp DPQueue.h
+	g++ -Wall -ansi -pedantic -c DPQueue.cpp
+
+clean:
+	@rm -rf Assign08TestAuto.o DPQueue.o
+
+cleanall:
+	@rm -rf Assign08TestAuto.o DPQueue.o a8a
