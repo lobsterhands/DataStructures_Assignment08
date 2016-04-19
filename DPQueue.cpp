@@ -224,7 +224,6 @@ namespace CS3358_SP2016_Assign08
       assert (new_capacity > 0);
       capacity = new_capacity;
 
-      cout << "Enter resize, new_cap is: " << new_capacity << endl;
       ItemType *temp = new ItemType[capacity]; // Allocate space
       if (temp == NULL) // Ensure memory is allocated
       {
@@ -239,7 +238,6 @@ namespace CS3358_SP2016_Assign08
 
       delete [] heap; // Free up old space
       heap = temp; // Update sequence::data to new memory location
-      cout << "Done resize." << endl;
    }
 
    bool p_queue::is_leaf(size_type i) const
@@ -297,13 +295,9 @@ namespace CS3358_SP2016_Assign08
       if (used <= ((2*i) + 2)) { // If no right child exists
          return ((2*i) + 1); // Return left child index
       } else { // If both children exist
-         cout << "comparing: " << heap[((2*i) + 1)].priority << " and " << heap[((2*i) + 2)].priority << endl;
          if (heap[((2*i) + 1)].priority >= heap[((2*i) + 2)].priority) {
-            cout << "return: " << heap[((2*i) + 1)].priority << endl;
             return ((2*i) + 1); // Return left child index
          } else {
-            cout << "return: " << heap[((2*i) + 2)].priority << endl;
-
             return ((2*i) + 2); // Return right child index
          }
       }
