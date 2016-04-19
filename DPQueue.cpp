@@ -133,25 +133,54 @@ namespace CS3358_SP2016_Assign08
 
    void p_queue::push(const value_type& entry, size_type priority)
    {
-      cout << "Cap: " << capacity << " | used: " << used << endl;
       if (used == capacity) { // If adding to the sequence will exceed capacity
-         cout << "resizing: " << used;
          size_type new_capacity = (int)((capacity * 1.5) + 1);
-         cout << " to: " << new_capacity << endl;
          resize(new_capacity);
       }
 
-      heap[used].data = entry;
+      heap[used].data = entry; // Insert the data and priority
       heap[used].priority = priority;
-
       used++;
 
-      // Logic for balanced tree goes here, see specs
+      size_type index = used-1;
+
+      // Compare the inserted priority with parent priority
+      if (used > 1) {
+         while (index != 0) {
+            if (heap[parent_index(index)].priority < priority) {
+               swap_with_parent(index);
+            }
+               index = parent_index(index);
+            }
+         }
    }
 
-   void p_queue::pop()
-   {
-      cerr << "pop() not implemented yet" << endl;
+   void p_queue::pop() {
+      assert (used > 0);
+
+      if (used > 1) {
+         used--;
+         heap[0] = heap[used]; // Swap last leaf and root
+
+         size_type parentPriority = heap[0].priority;
+         size_type childIndex = 0;
+         size_type childPriority = 0;
+
+         while ((!is_leaf(childIndex))) {
+            childPriority = big_child_priority(childIndex);
+
+            if (parentPriority < childPriority) {
+               childIndex = big_child_index(childIndex);
+               swap_with_parent(childIndex);
+            } else {
+               break;
+            }
+         }
+
+         //only 1 node
+      } else {
+         used--;
+      }
    }
 
    // CONSTANT MEMBER FUNCTIONS
@@ -179,25 +208,7 @@ namespace CS3358_SP2016_Assign08
    //           implementation may decide which one to return.)
       assert(used > 0);
 
-      size_type maxPriority;
-      size_type atIndex;
-      value_type highPriData;
-
-      for (size_type i = 0; i < used; i++) {
-         if (i == 0) {
-            atIndex = i;
-            maxPriority = heap[atIndex].priority;
-         } else {
-            if (heap[i].priority > maxPriority) {
-               atIndex = i;
-               maxPriority = heap[atIndex].priority;
-            }
-         }
-      }
-
-      highPriData = heap[atIndex].data;
-
-      return highPriData;
+      return heap[0].data;
    }
 
    // PRIVATE HELPER FUNCTIONS
@@ -213,6 +224,7 @@ namespace CS3358_SP2016_Assign08
       assert (new_capacity > 0);
       capacity = new_capacity;
 
+      cout << "Enter resize, new_cap is: " << new_capacity << endl;
       ItemType *temp = new ItemType[capacity]; // Allocate space
       if (temp == NULL) // Ensure memory is allocated
       {
@@ -253,7 +265,7 @@ namespace CS3358_SP2016_Assign08
       assert(i > 0);
       assert(i < used);
 
-      size_type parentIndex = (int)((i-1)/2);
+      size_type parentIndex = ((i-1)/2);
 
       return parentIndex;
    }
@@ -285,9 +297,13 @@ namespace CS3358_SP2016_Assign08
       if (used <= ((2*i) + 2)) { // If no right child exists
          return ((2*i) + 1); // Return left child index
       } else { // If both children exist
+         cout << "comparing: " << heap[((2*i) + 1)].priority << " and " << heap[((2*i) + 2)].priority << endl;
          if (heap[((2*i) + 1)].priority >= heap[((2*i) + 2)].priority) {
+            cout << "return: " << heap[((2*i) + 1)].priority << endl;
             return ((2*i) + 1); // Return left child index
          } else {
+            cout << "return: " << heap[((2*i) + 2)].priority << endl;
+
             return ((2*i) + 2); // Return right child index
          }
       }
@@ -316,11 +332,11 @@ namespace CS3358_SP2016_Assign08
       value_type tempData = heap[i].data; // Store child data in temp
       size_type tempPriority = heap[i].priority;
 
-      heap[i].data = heap[i/2].data; // Write data from parent into child
-      heap[i].priority = heap[i/2].priority;
+      heap[i].data = heap[parent_index(i)].data; // Write data from parent into child
+      heap[i].priority = heap[parent_index(i)].priority;
 
-      heap[i/2].data = tempData;      // Write data from child into parent
-      heap[i/2].priority = tempPriority;
+      heap[parent_index(i)].data = tempData;      // Write data from child into parent
+      heap[parent_index(i)].priority = tempPriority;
    }
 }
 

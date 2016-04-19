@@ -36,6 +36,15 @@ int main()
    int data;     // PQ item data entered by user
    p_queue::size_type priority; // PQ item priority entered by user
 
+   // LYLE
+   test.push(100, 100);
+   test.push(75, 75);
+   test.push(17, 17);
+   test.push(5, 5);
+   test.push(33, 33);
+   test.push(8, 8);
+   // LYLE END
+
    cout << "I have created an empty p_queue (PQ)." << endl;
    cout << "The data of an item of this PQ will be an integer,\n";
    cout << "and the priority associated with each item of this PQ\n";
